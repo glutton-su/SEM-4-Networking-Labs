@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureNet — Annotated Topology</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f3;
+  --bg2: #eeede9;
+  --fg: #1c1917;
+  --muted: #6b6560;
+  --border: #dedad4;
+  --accent: #b45309;
+
+  --c-router:   #1e40af;
+  --c-router-bg: #eff6ff;
+  --c-fw:       #991b1b;
+  --c-fw-bg:    #fff1f2;
+  --c-l3:       #166534;
+  --c-l3-bg:    #f0fdf4;
+  --c-l2:       #065f46;
+  --c-l2-bg:    #ecfdf5;
+  --c-srv:      #5b21b6;
+  --c-srv-bg:   #f5f3ff;
+  --c-wl:       #92400e;
+  --c-wl-bg:    #fffbeb;
+  --c-host:     #374151;
+  --c-host-bg:  #f9fafb;
+
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 13px;
+  line-height: 1.55;
+  padding-bottom: 60px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 24px 24px 18px;
+  border-bottom: 2px solid var(--fg);
+  background: var(--fg);
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.page-header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+}
+.page-header p { font-size: 11.5px; color: #a8a29e; margin-top: 3px; font-weight: 500; }
+.page-header .stats {
+  display: flex; gap: 16px; flex-shrink: 0;
+  font-family: var(--mono); font-size: 11px; color: #d6d3d1;
+}
+.page-header .stats span { display: flex; flex-direction: column; align-items: flex-end; }
+.page-header .stats strong { font-size: 20px; font-weight: 600; color: #fff; line-height: 1; }
+
+/* ── LAYER BAND ── */
+.layer {
+  margin: 20px 16px 0;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.layer-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.layer-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  min-width: 18px;
+}
+.layer-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  flex: 1;
+}
+.layer-proto {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: var(--border);
+  color: var(--muted);
+}
+.layer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── DEVICE ROW ── */
+.device {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  border-bottom: 1px solid var(--border);
+  min-height: 52px;
+  animation: fadeIn 0.3s ease both;
+}
+.device:last-child { border-bottom: none; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+
+.device-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-right: 1px solid var(--border);
+  background: #fff;
+}
+.dev-badge {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.dev-info { flex: 1; }
+.dev-name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.dev-ip {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── CONFIG PILLS ── */
+.device-right {
+  padding: 8px 12px;
+  background: #fafaf8;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+}
+.cfg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px;
+}
+.cfg-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  min-width: 60px;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+.pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+.pill.mono { font-family: var(--mono); font-size: 10.5px; font-weight: 500; }
+
+/* ── CONNECTOR LINES ── */
+.connector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: var(--bg);
+  border-top: 1px dashed var(--border);
+  border-bottom: 1px dashed var(--border);
+  margin: 0;
+}
+.connector-line {
+  flex: 1;
+  height: 1px;
+  background: repeating-linear-gradient(to right, var(--border) 0, var(--border) 5px, transparent 5px, transparent 10px);
+}
+.connector-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg2);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* ── CREDS BLOCK ── */
+.creds-block {
+  margin: 20px 16px 0;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.creds-header {
+  padding: 8px 14px;
+  background: var(--fg);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.creds-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  font-size: 12px;
+}
+.creds-table th {
+  text-align: left;
+  padding: 7px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.creds-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.creds-table tr:last-child td { border-bottom: none; }
+.creds-table tr:nth-child(even) td { background: var(--bg); }
+.creds-table td:nth-child(2), .creds-table td:nth-child(3) {
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.who-badge {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 3px;
+}
+
+/* TYPE COLORS */
+.badge-router  { background: var(--c-router-bg); color: var(--c-router); }
+.badge-fw      { background: var(--c-fw-bg);     color: var(--c-fw); }
+.badge-l3      { background: var(--c-l3-bg);     color: var(--c-l3); }
+.badge-l2      { background: var(--c-l2-bg);     color: var(--c-l2); }
+.badge-srv     { background: var(--c-srv-bg);    color: var(--c-srv); }
+.badge-wl      { background: var(--c-wl-bg);     color: var(--c-wl); }
+.badge-host    { background: var(--c-host-bg);   color: var(--c-host); }
+
+.pill-router  { background: var(--c-router-bg); color: var(--c-router); }
+.pill-fw      { background: var(--c-fw-bg);     color: var(--c-fw); }
+.pill-l3      { background: var(--c-l3-bg);     color: var(--c-l3); }
+.pill-l2      { background: var(--c-l2-bg);     color: var(--c-l2); }
+.pill-srv     { background: var(--c-srv-bg);    color: var(--c-srv); }
+.pill-wl      { background: var(--c-wl-bg);     color: var(--c-wl); }
+.pill-host    { background: var(--c-host-bg);   color: var(--c-host); }
+.pill-amber   { background: #fef3c7; color: #92400e; }
+.pill-red     { background: #fee2e2; color: #991b1b; }
+.pill-gray    { background: var(--bg2); color: var(--muted); }
+.pill-dark    { background: #1c1917; color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <h1>SecureNet Enterprise<br>Topology Design Map</h1>
+    <p>Annotated device roles · configs · credentials · protocols</p>
+  </div>
+  <div class="stats">
+    <span><strong>45</strong> devices</span>
+    <span><strong>52</strong> links</span>
+    <span><strong>8</strong> VLANs</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     LAYER 0 — INTERNET
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">L0</span>
+    <span class="layer-title">Internet / WAN</span>
+    <span class="layer-proto">RIPv2</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-router">2911 Router</span>
+        <div class="dev-info">
+          <div class="dev-name">ISP-Router</div>
+          <div class="dev-ip">203.0.113.1 · 203.0.114.1 · 203.0.115.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Routing</span>
+          <span class="pill pill-router">RIPv2</span>
+          <span class="pill pill-gray mono">no auto-summary</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Ports</span>
+          <span class="pill pill-gray mono">Gi0/0 → HQ-ASA</span>
+          <span class="pill pill-gray mono">Gi0/1/0 → BR1</span>
+          <span class="pill pill-gray mono">Gi0/2/0 → BR2</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="connector"><div class="connector-line"></div><span class="connector-label">WAN uplink · 203.0.113.0/30 · copper Gi0/0 ↔ Gi1/1</span><div class="connector-line"></div></div>
+
+
+<!-- ═══════════════════════════════════════════
+     LAYER 1 — FIREWALL / EDGE
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">L1</span>
+    <span class="layer-title">HQ Edge — Firewall</span>
+    <span class="layer-proto">NAT · ACL · IPsec IKEv1 · AAA</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-fw">ASA 5506-X</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-ASA</div>
+          <div class="dev-ip">outside 203.0.113.2<br>inside 10.0.0.1<br>dmz 172.16.0.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Zones</span>
+          <span class="pill pill-fw">outside sec-lvl 0</span>
+          <span class="pill pill-fw">inside sec-lvl 100</span>
+          <span class="pill pill-fw">dmz sec-lvl 50</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">NAT</span>
+          <span class="pill pill-amber">PAT: 10.0.0.0/8 → interface</span>
+          <span class="pill pill-amber">Static: .10→113.10 .11→113.11 .12→113.12</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">ACL</span>
+          <span class="pill pill-red">outside-in: 80/443/25/110/21/20 to DMZ</span>
+          <span class="pill pill-red">dmz-in: eq ports → inside</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">VPN</span>
+          <span class="pill pill-dark">IKEv1 AES+SHA+G2</span>
+          <span class="pill pill-dark">peer 203.0.114.2 (BR1)</span>
+          <span class="pill pill-dark">peer 203.0.115.2 (BR2)</span>
+          <span class="pill pill-gray mono">key: SecureNet123</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">AAA</span>
+          <span class="pill pill-srv">RADIUS → 10.0.1.12</span>
+          <span class="pill pill-gray mono">key: SecureNet@AAA</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Monitor</span>
+          <span class="pill pill-gray">SNMP: SecureNet-RO</span>
+          <span class="pill pill-gray">Syslog → 10.0.1.10</span>
+          <span class="pill pill-gray">NTP → 10.0.1.10</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="connector"><div class="connector-line"></div><span class="connector-label">inside 10.0.0.0/30 · Gi1/2 ↔ Gi0/0 copper</span><div class="connector-line"></div></div>
+
+
+<!-- ═══════════════════════════════════════════
+     LAYER 2 — CORE ROUTER
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">L2</span>
+    <span class="layer-title">HQ Core</span>
+    <span class="layer-proto">OSPF Area 0 · default-information originate</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-router">2911 Router</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-Core</div>
+          <div class="dev-ip">10.0.0.2 / 10.10.0.1 / 10.10.0.5<br>router-id 1.1.1.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Ports</span>
+          <span class="pill pill-gray mono">Gi0/0 → ASA inside</span>
+          <span class="pill pill-gray mono">Gi0/1 → Dist1 (10.10.0.1/30)</span>
+          <span class="pill pill-gray mono">Gi0/2 → Dist2 (10.10.0.5/30)</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Routing</span>
+          <span class="pill pill-router">OSPF Area 0</span>
+          <span class="pill pill-router">default-information originate</span>
+          <span class="pill pill-gray mono">default-route → 10.0.0.1</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">AAA</span>
+          <span class="pill pill-srv">aaa new-model</span>
+          <span class="pill pill-srv">RADIUS 10.0.1.12:1645</span>
+          <span class="pill pill-gray mono">key: SecureNet@AAA</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Monitor</span>
+          <span class="pill pill-gray">SNMP: SecureNet-RO</span>
+          <span class="pill pill-gray">Syslog/NTP → 10.0.1.10</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="connector"><div class="connector-line"></div><span class="connector-label">Gi0/1 → Dist1 Gi0/1 · Gi0/2 → Dist2 Gi0/1 · copper · OSPF point-to-point</span><div class="connector-line"></div></div>
+
+
+<!-- ═══════════════════════════════════════════
+     LAYER 3 — DISTRIBUTION
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">L3</span>
+    <span class="layer-title">HQ Distribution</span>
+    <span class="layer-proto">HSRP · OSPF · EtherChannel LACP · Rapid-PVST · DHCP relay</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l3">L3 Switch</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-Dist1</div>
+          <div class="dev-ip">HSRP Active: V10/20/30/80<br>OSPF router-id 2.2.2.2</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">EtherCh</span>
+          <span class="pill pill-l3">Port-Channel 1 LACP</span>
+          <span class="pill pill-gray mono">Fa0/23 + Fa0/24 → Dist2</span>
+          <span class="pill pill-gray mono">trunk all VLANs</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Uplinks</span>
+          <span class="pill pill-gray mono">Gi0/1 → HQ-Core (routed)</span>
+          <span class="pill pill-gray mono">Gi0/2 → HQ-SW-Svc VLAN80</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">HSRP</span>
+          <span class="pill pill-l3">Active V10 V20 V30 V80 — prio 110</span>
+          <span class="pill pill-gray">Standby V40 V50 V60 — prio 90</span>
+          <span class="pill pill-gray mono">VIPs: .1 each subnet</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">DHCP</span>
+          <span class="pill pill-amber">ip helper-address 10.0.1.10 (all SVIs)</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">STP</span>
+          <span class="pill pill-l3">Root V10/20/30/80 — prio 4096</span>
+          <span class="pill pill-gray">Non-root V40/50/60/70 — prio 8192</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">OSPF</span>
+          <span class="pill pill-router">advertises V10–V80 subnets to Core</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l3">L3 Switch</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-Dist2</div>
+          <div class="dev-ip">HSRP Active: V40/50/60/70<br>OSPF router-id 3.3.3.3</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">EtherCh</span>
+          <span class="pill pill-l3">Port-Channel 1 LACP</span>
+          <span class="pill pill-gray mono">Fa0/23 + Fa0/24 → Dist1</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Special</span>
+          <span class="pill pill-gray mono">Gi0/1 → HQ-Core (routed)</span>
+          <span class="pill pill-wl mono">Fa0/7 → Guest-WiFi WAN (VLAN 70)</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">HSRP</span>
+          <span class="pill pill-l3">Active V40 V50 V60 V70 — prio 110</span>
+          <span class="pill pill-gray">Standby V10 V20 V30 V80 — prio 90</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">DHCP</span>
+          <span class="pill pill-amber">Pool GUEST-WIFI 10.10.70.0/24</span>
+          <span class="pill pill-gray mono">GW .254 · DNS 8.8.8.8</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">STP</span>
+          <span class="pill pill-l3">Root V40/50/60/70 — prio 4096</span>
+          <span class="pill pill-gray">Non-root V10/20/30/80 — prio 8192</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="connector"><div class="connector-line"></div><span class="connector-label">Fa0/1–6 trunk per VLAN → each access switch · dual uplinks (Dist1 + Dist2)</span><div class="connector-line"></div></div>
+
+
+<!-- ═══════════════════════════════════════════
+     LAYER 4 — ACCESS
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">L4</span>
+    <span class="layer-title">HQ Access Layer — 6 × L2 Switches</span>
+    <span class="layer-proto">802.1Q · STP PortFast · BPDU Guard · Dual uplinks</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l2">L2 Switch ×6</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-SW-Mgmt / IT / Fin<br>HR / Sales / Ops</div>
+          <div class="dev-ip">V10/V20/V30/V40/V50/V60</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Uplinks</span>
+          <span class="pill pill-l2 mono">Fa0/23 → Dist1 (trunk, STP primary)</span>
+          <span class="pill pill-l2 mono">Fa0/24 → Dist2 (trunk, STP secondary)</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Hosts</span>
+          <span class="pill pill-gray mono">Fa0/1 → PC-[Dept]1</span>
+          <span class="pill pill-gray mono">Fa0/2 → PC-[Dept]2</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Security</span>
+          <span class="pill pill-red">spanning-tree portfast</span>
+          <span class="pill pill-red">bpduguard enable</span>
+          <span class="pill pill-l2">Rapid-PVST</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">PCs</span>
+          <span class="pill pill-host">Static IP .10 / .11</span>
+          <span class="pill pill-gray mono">GW: .1 (HSRP VIP)</span>
+          <span class="pill pill-gray mono">DNS: 10.0.1.11</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     HQ SERVICES
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">SVC</span>
+    <span class="layer-title">HQ Services — VLAN 80 (10.0.1.0/24)</span>
+    <span class="layer-proto">NTP · SNMP · Syslog · DNS · RADIUS/AAA · WLC</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l2">L2 Switch</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-SW-Svc</div>
+          <div class="dev-ip">Gi0/1 trunk VLAN80 → Dist1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Ports</span>
+          <span class="pill pill-gray mono">Fa0/1 → SRV-Internal</span>
+          <span class="pill pill-gray mono">Fa0/2 → DNS-Server</span>
+          <span class="pill pill-gray mono">Fa0/3 → AAA-Server</span>
+          <span class="pill pill-gray mono">Fa0/4 → WLC</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Security</span>
+          <span class="pill pill-red">portfast + bpduguard all host ports</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-srv">Server-PT</span>
+        <div class="dev-info">
+          <div class="dev-name">SRV-Internal</div>
+          <div class="dev-ip">10.0.1.10 · GW 10.0.1.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Services</span>
+          <span class="pill pill-srv">NTP server</span>
+          <span class="pill pill-srv">Syslog collector</span>
+          <span class="pill pill-srv">SNMP manager</span>
+          <span class="pill pill-srv">DHCP</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">SNMP</span>
+          <span class="pill pill-gray mono">community: SecureNet-RO RO</span>
+          <span class="pill pill-gray">polls ASA, Core, Dist1, Dist2, BR routers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-srv">Server-PT</span>
+        <div class="dev-info">
+          <div class="dev-name">DNS-Server</div>
+          <div class="dev-ip">10.0.1.11 · GW 10.0.1.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Service</span>
+          <span class="pill pill-srv">DNS port 53</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Records</span>
+          <span class="pill pill-gray mono">securenet.local → 10.0.1.10</span>
+          <span class="pill pill-gray mono">web.securenet.com → 203.0.113.10</span>
+          <span class="pill pill-gray mono">mail → 203.0.113.11</span>
+          <span class="pill pill-gray mono">ftp → 203.0.113.12</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-srv">Server-PT</span>
+        <div class="dev-info">
+          <div class="dev-name">AAA-Server</div>
+          <div class="dev-ip">10.0.1.12 · GW 10.0.1.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Protocol</span>
+          <span class="pill pill-srv">RADIUS auth:1645 acct:1646</span>
+          <span class="pill pill-gray mono">shared key: SecureNet@AAA</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Users</span>
+          <span class="pill pill-gray mono">admin / SecureNet@Admin</span>
+          <span class="pill pill-gray mono">netops / SecureNet@Ops</span>
+          <span class="pill pill-gray mono">readonly / SecureNet@RO</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Used by</span>
+          <span class="pill pill-fw">HQ-ASA</span>
+          <span class="pill pill-router">HQ-Core</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-wl">WRT300N</span>
+        <div class="dev-info">
+          <div class="dev-name">WLC (simulated)</div>
+          <div class="dev-ip">10.0.1.20 · VLAN 80</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">SSID</span>
+          <span class="pill pill-wl">SecureNet-Corp</span>
+          <span class="pill pill-wl">WPA2-PSK</span>
+          <span class="pill pill-gray mono">pass: Corp@SecureNet!</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Note</span>
+          <span class="pill pill-amber">PT simulation — no real WLC support</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     DMZ
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">DMZ</span>
+    <span class="layer-title">HQ DMZ — 172.16.0.0/24</span>
+    <span class="layer-proto">Static NAT · ASA sec-level 50 · HTTP · SMTP · FTP</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l2">L2 Switch</span>
+        <div class="dev-info">
+          <div class="dev-name">HQ-SW-DMZ</div>
+          <div class="dev-ip">Gi0/1 → ASA Gi1/3 (dmz)</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Ports</span>
+          <span class="pill pill-gray mono">Fa0/1 → DMZ-Web (.10)</span>
+          <span class="pill pill-gray mono">Fa0/2 → DMZ-Email (.11)</span>
+          <span class="pill pill-gray mono">Fa0/3 → DMZ-FTP (.12)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-srv">Server-PT ×3</span>
+        <div class="dev-info">
+          <div class="dev-name">DMZ-Web / Email / FTP</div>
+          <div class="dev-ip">172.16.0.10 / .11 / .12<br>GW: 172.16.0.1 (ASA)</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Services</span>
+          <span class="pill pill-srv">HTTP/HTTPS (80/443)</span>
+          <span class="pill pill-srv">SMTP/POP3 (25/110)</span>
+          <span class="pill pill-srv">FTP (20/21)</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Public IP</span>
+          <span class="pill pill-amber">203.0.113.10 / .11 / .12 (static NAT on ASA)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     GUEST WIFI
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">WiFi</span>
+    <span class="layer-title">Guest Wireless — VLAN 70 (10.10.70.0/24)</span>
+    <span class="layer-proto">WPA2-PSK · NAT isolation · DNS 8.8.8.8</span>
+  </div>
+  <div class="layer-body">
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-wl">WRT300N</span>
+        <div class="dev-info">
+          <div class="dev-name">Guest-WiFi</div>
+          <div class="dev-ip">WAN: DHCP from Dist2 Fa0/7<br>LAN: 10.10.70.1/24</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">SSID</span>
+          <span class="pill pill-wl">SecureNet-Guest</span>
+          <span class="pill pill-wl">WPA2-PSK</span>
+          <span class="pill pill-gray mono">pass: Guest@2024!</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">DHCP</span>
+          <span class="pill pill-gray mono">pool: 10.10.70.100 (+50 hosts)</span>
+          <span class="pill pill-gray mono">DNS: 8.8.8.8 (internet only)</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Isolation</span>
+          <span class="pill pill-red">WRT300N NAT blocks access to 10.x.x.x</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     BRANCH 1 & 2
+════════════════════════════════════════════ -->
+<div class="layer">
+  <div class="layer-header">
+    <span class="layer-num">BR</span>
+    <span class="layer-title">Branch 1 &amp; 2 — Remote Sites</span>
+    <span class="layer-proto">RIPv2 · IPsec IKEv1 VPN · 3-tier mini stack</span>
+  </div>
+  <div class="layer-body">
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-router">2911 Router ×2</span>
+        <div class="dev-info">
+          <div class="dev-name">BR1-Router / BR2-Router</div>
+          <div class="dev-ip">WAN: 203.0.114.2 / 203.0.115.2<br>LAN: 192.168.1.1 / 192.168.2.1</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Ports</span>
+          <span class="pill pill-gray mono">Gi0/0/0 (fiber) → ISP · crypto map here</span>
+          <span class="pill pill-gray mono">Gi0/1 (copper) → BR[N]-Dist</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Routing</span>
+          <span class="pill pill-router">RIPv2 no auto-summary</span>
+          <span class="pill pill-gray mono">default-route → ISP</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">VPN</span>
+          <span class="pill pill-dark">IPsec IKEv1</span>
+          <span class="pill pill-dark">peer: 203.0.113.2 (ASA)</span>
+          <span class="pill pill-gray mono">key: SecureNet123</span>
+          <span class="pill pill-gray mono">ACL: 192.168.x.0/24 ↔ 10.0.0.0/8</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">⚠ PT Note</span>
+          <span class="pill pill-red">run reload after opening .pkt for crypto to engage</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Monitor</span>
+          <span class="pill pill-gray">SNMP: SecureNet-RO</span>
+          <span class="pill pill-gray">Syslog/NTP → 10.0.1.10</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l3">L3 Switch ×2</span>
+        <div class="dev-info">
+          <div class="dev-name">BR1-Dist / BR2-Dist</div>
+          <div class="dev-ip">192.168.1.2 / 192.168.2.2 (VLAN 90)</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Config</span>
+          <span class="pill pill-l3">ip routing</span>
+          <span class="pill pill-gray mono">Gi0/1 routed → BR[N]-Router</span>
+          <span class="pill pill-gray mono">Fa0/1 trunk → BR[N]-SW</span>
+          <span class="pill pill-l2">VLAN 90 — BR[N]-Servers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="device">
+      <div class="device-left">
+        <span class="dev-badge badge-l2">L2 Switch ×2</span>
+        <div class="dev-info">
+          <div class="dev-name">BR1-SW / BR2-SW</div>
+          <div class="dev-ip">3 PCs each: .10 / .11 / .12</div>
+        </div>
+      </div>
+      <div class="device-right">
+        <div class="cfg-row">
+          <span class="cfg-label">Ports</span>
+          <span class="pill pill-gray mono">Gi0/1 trunk → BR[N]-Dist</span>
+          <span class="pill pill-gray mono">Fa0/1-3 access VLAN 90 → PCs</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">Security</span>
+          <span class="pill pill-red">portfast + bpduguard</span>
+          <span class="pill pill-l2">Rapid-PVST</span>
+        </div>
+        <div class="cfg-row">
+          <span class="cfg-label">PCs</span>
+          <span class="pill pill-host">Static IP .10/.11/.12</span>
+          <span class="pill pill-gray mono">GW: 192.168.x.1</span>
+          <span class="pill pill-gray mono">DNS: 10.0.1.11 (via VPN)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CREDENTIALS REFERENCE
+════════════════════════════════════════════ -->
+<div class="creds-block">
+  <div class="creds-header">🔑 Credentials &amp; Keys Reference</div>
+  <table class="creds-table">
+    <thead>
+      <tr>
+        <th>Purpose</th>
+        <th>Username / Key / Community</th>
+        <th>Password / Value</th>
+        <th>Used On</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>IPsec Pre-shared Key</td>
+        <td>—</td>
+        <td>SecureNet123</td>
+        <td>
+          <span class="who-badge" style="background:#fee2e2;color:#991b1b">HQ-ASA</span>
+          <span class="who-badge" style="background:#eff6ff;color:#1e40af">BR1-Router</span>
+          <span class="who-badge" style="background:#eff6ff;color:#1e40af">BR2-Router</span>
+        </td>
+      </tr>
+      <tr>
+        <td>RADIUS Shared Key</td>
+        <td>—</td>
+        <td>SecureNet@AAA</td>
+        <td>
+          <span class="who-badge" style="background:#fee2e2;color:#991b1b">HQ-ASA</span>
+          <span class="who-badge" style="background:#eff6ff;color:#1e40af">HQ-Core</span>
+          <span class="who-badge" style="background:#f5f3ff;color:#5b21b6">AAA-Server</span>
+        </td>
+      </tr>
+      <tr>
+        <td>SNMP Community</td>
+        <td>SecureNet-RO</td>
+        <td>RO (read-only)</td>
+        <td>
+          <span class="who-badge" style="background:#fee2e2;color:#991b1b">ASA</span>
+          <span class="who-badge" style="background:#eff6ff;color:#1e40af">Core</span>
+          <span class="who-badge" style="background:#f0fdf4;color:#166534">Dist1/2</span>
+          <span class="who-badge" style="background:#eff6ff;color:#1e40af">BR Routers</span>
+        </td>
+      </tr>
+      <tr>
+        <td>AAA User — Admin</td>
+        <td>admin</td>
+        <td>SecureNet@Admin</td>
+        <td><span class="who-badge" style="background:#f5f3ff;color:#5b21b6">AAA-Server</span></td>
+      </tr>
+      <tr>
+        <td>AAA User — NetOps</td>
+        <td>netops</td>
+        <td>SecureNet@Ops</td>
+        <td><span class="who-badge" style="background:#f5f3ff;color:#5b21b6">AAA-Server</span></td>
+      </tr>
+      <tr>
+        <td>AAA User — ReadOnly</td>
+        <td>readonly</td>
+        <td>SecureNet@RO</td>
+        <td><span class="who-badge" style="background:#f5f3ff;color:#5b21b6">AAA-Server</span></td>
+      </tr>
+      <tr>
+        <td>Guest WiFi PSK</td>
+        <td>SSID: SecureNet-Guest</td>
+        <td>Guest@2024!</td>
+        <td><span class="who-badge" style="background:#fffbeb;color:#92400e">Guest-WiFi</span></td>
+      </tr>
+      <tr>
+        <td>Corp WiFi PSK</td>
+        <td>SSID: SecureNet-Corp</td>
+        <td>Corp@SecureNet!</td>
+        <td><span class="who-badge" style="background:#fffbeb;color:#92400e">WLC</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

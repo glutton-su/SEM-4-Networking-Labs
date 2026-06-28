@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureNet Technologies — Enterprise Network Design Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fdfcfa;
+  --bg2: #f3f1ec;
+  --fg: #1a1916;
+  --muted: #6b6458;
+  --border: #ddd9d0;
+  --accent: #7c2d12;
+  --accent2: #b45309;
+  --head: 'Lora', Georgia, serif;
+  --body: 'Plus Jakarta Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* ── COVER ── */
+.cover {
+  padding: 52px 36px 40px;
+  border-bottom: 3px solid var(--fg);
+  background: var(--fg);
+  color: #fff;
+}
+.cover-kicker {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a8a29e;
+  margin-bottom: 16px;
+}
+.cover h1 {
+  font-family: var(--head);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+.cover h1 em {
+  font-style: italic;
+  color: #d6d3d1;
+}
+.cover-sub {
+  font-size: 13.5px;
+  color: #a8a29e;
+  margin-bottom: 28px;
+  font-weight: 500;
+}
+.cover-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 20px;
+  font-size: 12px;
+  color: #d6d3d1;
+}
+.cover-meta dt { color: #78716c; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.cover-meta dd { font-family: var(--mono); font-size: 11.5px; color: #e7e5e4; }
+
+/* ── TOC ── */
+.toc {
+  padding: 24px 36px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.toc-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.toc ol {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.toc li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.toc-num {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--accent2);
+  font-weight: 600;
+  min-width: 22px;
+}
+.toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--border);
+  margin-bottom: 3px;
+}
+.toc-pg {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+/* ── CONTENT ── */
+.content {
+  padding: 0 36px;
+  max-width: 860px;
+}
+
+/* ── SECTIONS ── */
+.section {
+  padding: 32px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.section:last-child { border-bottom: none; }
+
+.section-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 4px;
+}
+.section h2 {
+  font-family: var(--head);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  color: var(--fg);
+}
+.section h3 {
+  font-family: var(--head);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0 8px;
+  color: var(--fg);
+}
+.section h4 {
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 16px 0 6px;
+}
+
+p { margin-bottom: 12px; }
+p:last-child { margin-bottom: 0; }
+
+/* ── CALLOUT ── */
+.callout {
+  border-left: 3px solid var(--accent2);
+  background: #fffbf5;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 13px;
+}
+.callout strong { color: var(--accent); }
+
+.callout-blue {
+  border-left-color: #1d4ed8;
+  background: #eff6ff;
+}
+.callout-blue strong { color: #1e40af; }
+
+.callout-green {
+  border-left-color: #15803d;
+  background: #f0fdf4;
+}
+.callout-green strong { color: #166534; }
+
+/* ── TABLES ── */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 14px 0;
+}
+.report-table caption {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 6px;
+  caption-side: top;
+  padding-bottom: 4px;
+}
+.report-table th {
+  text-align: left;
+  padding: 7px 10px;
+  background: var(--bg2);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.report-table td {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+.report-table tr:nth-child(even) td { background: var(--bg2); }
+.report-table td.mono { font-family: var(--mono); font-size: 11.5px; }
+.report-table td.center { text-align: center; }
+
+/* ── CODE ── */
+code {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
+pre {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: #1c1917;
+  color: #d6d3d1;
+  padding: 14px 16px;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.6;
+}
+pre .k { color: #fbbf24; }
+pre .v { color: #86efac; }
+pre .c { color: #6b7280; font-style: italic; }
+pre .i { color: #93c5fd; }
+
+/* ── FIGURE ── */
+.figure {
+  margin: 20px 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.figure-body {
+  padding: 20px;
+  background: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--fg);
+}
+.figure-caption {
+  padding: 7px 14px;
+  background: var(--bg2);
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  font-style: italic;
+}
+.fig-box { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.fig-node {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 11px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.fig-arrow { color: var(--muted); font-size: 16px; }
+.fig-label { font-size: 9.5px; color: var(--muted); text-align: center; margin-top: 3px; }
+
+.vlan-strip { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.vlan-chip {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+/* ── FOOTER ── */
+.page-footer {
+  margin: 40px 36px 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-kicker">Academic Report — Network Design &amp; Implementation</div>
+  <h1>Enterprise Network Design for<br><em>SecureNet Technologies</em></h1>
+  <p class="cover-sub">A comprehensive three-tier network architecture with security, redundancy, and multi-site connectivity</p>
+  <dl class="cover-meta">
+    <dt>Role</dt><dd>Junior Network Security Engineer</dd>
+    <dt>Organisation</dt><dd>SecureNet Technologies</dd>
+    <dt>Platform</dt><dd>Cisco Packet Tracer 9.0</dd>
+    <dt>Devices</dt><dd>45 nodes · 52 links</dd>
+    <dt>Protocols</dt><dd>OSPF · RIPv2 · BGP (discussed) · IPsec</dd>
+    <dt>Date</dt><dd>June 2026</dd>
+  </dl>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Table of Contents</div>
+  <ol>
+    <li><span class="toc-num">1</span> Executive Summary <div class="toc-dots"></div></li>
+    <li><span class="toc-num">2</span> Scenario &amp; Requirements <div class="toc-dots"></div></li>
+    <li><span class="toc-num">3</span> Network Architecture — Three-Tier Model <div class="toc-dots"></div></li>
+    <li><span class="toc-num">4</span> VLAN Design &amp; 802.1Q Trunking <div class="toc-dots"></div></li>
+    <li><span class="toc-num">5</span> Routing Protocol Implementation <div class="toc-dots"></div></li>
+    <li><span class="toc-num">6</span> Redundancy — HSRP, EtherChannel &amp; STP <div class="toc-dots"></div></li>
+    <li><span class="toc-num">7</span> Security Design — Firewall, DMZ &amp; ACLs <div class="toc-dots"></div></li>
+    <li><span class="toc-num">8</span> Site-to-Site IPsec VPN <div class="toc-dots"></div></li>
+    <li><span class="toc-num">9</span> Network Services — DHCP, DNS, NTP, AAA <div class="toc-dots"></div></li>
+    <li><span class="toc-num">10</span> Wireless &amp; Guest Network <div class="toc-dots"></div></li>
+    <li><span class="toc-num">11</span> Monitoring — SNMP &amp; Syslog <div class="toc-dots"></div></li>
+    <li><span class="toc-num">12</span> SDN &amp; Cloud Trends (Part D) <div class="toc-dots"></div></li>
+    <li><span class="toc-num">13</span> Conclusion <div class="toc-dots"></div></li>
+  </ol>
+</div>
+
+<div class="content">
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<div class="section">
+  <div class="section-num">Section 01</div>
+  <h2>Executive Summary</h2>
+  <p>This report documents the complete design and simulated implementation of an enterprise network for SecureNet Technologies. Acting in the role of Junior Network Security Engineer, this project delivers a robust, secure, and scalable network infrastructure across one headquarters site and two remote branch locations.</p>
+  <p>The design follows Cisco's proven three-tier hierarchical model comprising Core, Distribution, and Access layers. The network incorporates eight segmented VLANs, redundant distribution-layer switching with Hot Standby Router Protocol (HSRP) and IEEE 802.3ad EtherChannel, three distinct routing protocols (OSPF at HQ core, RIPv2 at branches), site-to-site IPsec VPN tunnels secured by IKEv1, a demilitarised zone (DMZ) protected by a Cisco ASA 5506-X firewall, centralised authentication via RADIUS/AAA, and wireless isolation for guest users. All components have been simulated and validated in Cisco Packet Tracer 9.0.</p>
+
+  <div class="callout callout-blue">
+    <strong>Key Outcome:</strong> A 45-device topology with zero single points of failure at the distribution layer, full inter-VLAN routing, dual IPsec VPN tunnels to branch sites, and a hardened DMZ hosting Web, Email, and FTP public services.
+  </div>
+</div>
+
+<!-- 2. SCENARIO -->
+<div class="section">
+  <div class="section-num">Section 02</div>
+  <h2>Scenario &amp; Requirements</h2>
+  <p>SecureNet Technologies is a growing organisation requiring a professionally designed enterprise network to support its expanding workforce and distributed operations. The network must serve the following business objectives:</p>
+
+  <h3>2.1 Business Requirements</h3>
+  <ul style="padding-left:20px; margin-bottom:12px; display:flex; flex-direction:column; gap:5px;">
+    <li>Segment internal departments into isolated VLANs to enforce security boundaries and contain broadcast domains</li>
+    <li>Provide high availability at the distribution layer so that no single switch failure disrupts connectivity</li>
+    <li>Connect two geographically separate branch offices to headquarters via encrypted tunnels over public infrastructure</li>
+    <li>Expose selected public services (Web, Email, FTP) to the internet without compromising the internal network</li>
+    <li>Provide a guest wireless network isolated from corporate resources</li>
+    <li>Centralise authentication, authorisation, and accounting (AAA) for network device access</li>
+    <li>Maintain comprehensive monitoring via SNMP, Syslog, NTP, and DNS</li>
+  </ul>
+
+  <h3>2.2 Assignment Structure</h3>
+  <table class="report-table">
+    <caption>Assignment Parts and Scope</caption>
+    <thead>
+      <tr><th>Part</th><th>Focus Area</th><th>Key Technologies</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Part A</strong></td><td>Routing Architecture</td><td>Three-tier design, RIPv2, OSPF, BGP introduction</td></tr>
+      <tr><td><strong>Part B</strong></td><td>Switching &amp; Redundancy</td><td>VLANs, 802.1Q, STP, EtherChannel, HSRP, DHCP, VTP, BPDU Guard</td></tr>
+      <tr><td><strong>Part C</strong></td><td>Security &amp; Services</td><td>ASA Firewall, DMZ, IPsec VPN, AAA, SNMP, Syslog, NTP, DNS, Wireless</td></tr>
+      <tr><td><strong>Part D</strong></td><td>Governance &amp; Trends</td><td>SDN, cloud networking, documentation</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 3. ARCHITECTURE -->
+<div class="section">
+  <div class="section-num">Section 03</div>
+  <h2>Network Architecture — Three-Tier Model</h2>
+  <p>The network is designed around Cisco's three-tier hierarchical model, a well-established framework that separates network functions into distinct layers. This separation improves scalability, simplifies troubleshooting, and enables predictable traffic flows.</p>
+
+  <div class="figure">
+    <div class="figure-body">
+      <div style="margin-bottom:10px; font-weight:600; color:#92400e;">[ Internet ]</div>
+      <div class="fig-box" style="margin-bottom:6px;">
+        <div><div class="fig-node" style="background:#eff6ff;border-color:#93c5fd;color:#1e40af;">ISP-Router</div><div class="fig-label">RIPv2 · WAN</div></div>
+      </div>
+      <div style="margin:4px 0 4px 20px;color:#9ca3af;">│ 203.0.113.0/30</div>
+      <div class="fig-box" style="margin-bottom:6px;">
+        <div><div class="fig-node" style="background:#fff1f2;border-color:#fca5a5;color:#991b1b;">HQ-ASA (Firewall)</div><div class="fig-label">outside/inside/dmz · NAT · ACL · IPsec</div></div>
+      </div>
+      <div style="margin:4px 0 4px 20px;color:#9ca3af;">│ 10.0.0.0/30</div>
+      <div style="font-weight:700;font-size:10px;color:#92400e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">─── CORE LAYER ───</div>
+      <div class="fig-box" style="margin-bottom:6px;">
+        <div><div class="fig-node" style="background:#eff6ff;border-color:#93c5fd;color:#1e40af;">HQ-Core Router</div><div class="fig-label">OSPF Area 0 · router-id 1.1.1.1</div></div>
+      </div>
+      <div style="margin:4px 0 4px 20px;color:#9ca3af;">├─ Gi0/1 ──────── Gi0/2 ─┤</div>
+      <div style="font-weight:700;font-size:10px;color:#92400e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">─── DISTRIBUTION LAYER ───</div>
+      <div class="fig-box" style="margin-bottom:6px;">
+        <div><div class="fig-node" style="background:#f0fdf4;border-color:#86efac;color:#166534;">HQ-Dist1 (3560)</div><div class="fig-label">HSRP Active V10/20/30/80</div></div>
+        <span style="font-family:var(--mono);font-size:11px;color:#6b7280;">◄──Po1 LACP──►</span>
+        <div><div class="fig-node" style="background:#f0fdf4;border-color:#86efac;color:#166534;">HQ-Dist2 (3560)</div><div class="fig-label">HSRP Active V40/50/60/70</div></div>
+      </div>
+      <div style="margin:4px 0 4px 20px;color:#9ca3af;">Fa0/1–6 dual trunks to each access switch</div>
+      <div style="font-weight:700;font-size:10px;color:#92400e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">─── ACCESS LAYER ───</div>
+      <div class="fig-box">
+        <div><div class="fig-node" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">SW-Mgmt</div><div class="fig-label">VLAN 10</div></div>
+        <div><div class="fig-node" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">SW-IT</div><div class="fig-label">VLAN 20</div></div>
+        <div><div class="fig-node" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">SW-Fin</div><div class="fig-label">VLAN 30</div></div>
+        <div><div class="fig-node" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">SW-HR</div><div class="fig-label">VLAN 40</div></div>
+        <div><div class="fig-node" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">SW-Sales</div><div class="fig-label">VLAN 50</div></div>
+        <div><div class="fig-node" style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46;">SW-Ops</div><div class="fig-label">VLAN 60</div></div>
+      </div>
+    </div>
+    <div class="figure-caption">Figure 1 — SecureNet HQ three-tier hierarchical topology with dual distribution switches</div>
+  </div>
+
+  <h3>3.1 Core Layer</h3>
+  <p>A single Cisco 2911 router (<strong>HQ-Core</strong>) serves as the core routing device. It connects directly to the ASA firewall on its inside interface and maintains Layer 3 routed links to both distribution switches. Running OSPF Area 0 with <code>default-information originate</code>, it propagates a default route learned from the ASA throughout the HQ network. The core router also integrates RADIUS-based AAA for device management access.</p>
+
+  <h3>3.2 Distribution Layer</h3>
+  <p>Two Cisco 3560-24PS Layer 3 switches (<strong>HQ-Dist1</strong> and <strong>HQ-Dist2</strong>) form the distribution layer. These perform inter-VLAN routing via Switched Virtual Interfaces (SVIs), run HSRP for gateway redundancy, form an EtherChannel peer-link for VLAN traffic sharing, and enforce Spanning Tree root priorities aligned with HSRP active roles. Both switches participate in OSPF Area 0 to advertise VLAN subnets to the core.</p>
+
+  <h3>3.3 Access Layer</h3>
+  <p>Six Cisco 2960-24TT Layer 2 switches provide end-user connectivity, one per department VLAN. Each access switch connects to <em>both</em> distribution switches via dual trunked uplinks (Fa0/23 → Dist1, Fa0/24 → Dist2). Spanning Tree Protocol blocks the redundant path under normal operation and automatically restores it on upstream failure. All host-facing ports are configured with <code>spanning-tree portfast</code> and <code>bpduguard enable</code> to eliminate convergence delay and prevent rogue switch attachment.</p>
+</div>
+
+<!-- 4. VLANs -->
+<div class="section">
+  <div class="section-num">Section 04</div>
+  <h2>VLAN Design &amp; 802.1Q Trunking</h2>
+  <p>VLANs provide logical segmentation of the physical network, reducing broadcast domain size, improving security through isolation, and enabling policy enforcement per department. Eight VLANs are deployed across the HQ site.</p>
+
+  <table class="report-table">
+    <caption>Table 1 — VLAN Allocation and IP Addressing</caption>
+    <thead>
+      <tr><th>VLAN ID</th><th>Name</th><th>Subnet</th><th>HSRP VIP (GW)</th><th>Dist1 SVI</th><th>Dist2 SVI</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">10</td><td>Management</td><td class="mono">10.10.10.0/24</td><td class="mono">10.10.10.1</td><td class="mono">.2 (Active)</td><td class="mono">.3 (Standby)</td></tr>
+      <tr><td class="mono">20</td><td>IT</td><td class="mono">10.10.20.0/24</td><td class="mono">10.10.20.1</td><td class="mono">.2 (Active)</td><td class="mono">.3 (Standby)</td></tr>
+      <tr><td class="mono">30</td><td>Finance</td><td class="mono">10.10.30.0/24</td><td class="mono">10.10.30.1</td><td class="mono">.2 (Active)</td><td class="mono">.3 (Standby)</td></tr>
+      <tr><td class="mono">40</td><td>HR</td><td class="mono">10.10.40.0/24</td><td class="mono">10.10.40.1</td><td class="mono">.3 (Standby)</td><td class="mono">.2 (Active)</td></tr>
+      <tr><td class="mono">50</td><td>Sales</td><td class="mono">10.10.50.0/24</td><td class="mono">10.10.50.1</td><td class="mono">.3 (Standby)</td><td class="mono">.2 (Active)</td></tr>
+      <tr><td class="mono">60</td><td>Operations</td><td class="mono">10.10.60.0/24</td><td class="mono">10.10.60.1</td><td class="mono">.3 (Standby)</td><td class="mono">.2 (Active)</td></tr>
+      <tr><td class="mono">70</td><td>Guest WiFi</td><td class="mono">10.10.70.0/24</td><td class="mono">10.10.70.254</td><td>—</td><td class="mono">.254</td></tr>
+      <tr><td class="mono">80</td><td>Services</td><td class="mono">10.0.1.0/24</td><td class="mono">10.0.1.1</td><td class="mono">.2 (Active)</td><td class="mono">.3 (Standby)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.1 Trunk Configuration</h3>
+  <p>All inter-switch links between distribution and access layers are configured as IEEE 802.1Q trunks. VTP is set to <code>transparent</code> mode on the distribution switches to prevent accidental VLAN database propagation — VLAN definitions are managed locally on each device. The EtherChannel peer-link between Dist1 and Dist2 carries all VLANs (10–80) to ensure HSRP hellos and inter-VLAN traffic can traverse the peer path during upstream failover.</p>
+
+  <pre><span class="c">! Trunk port example — HQ-SW-Mgmt uplink to Dist1</span>
+<span class="k">interface</span> <span class="i">FastEthernet0/23</span>
+ <span class="k">switchport mode</span> <span class="v">trunk</span>
+ <span class="k">switchport trunk allowed vlan</span> <span class="v">10</span>
+ <span class="k">no shutdown</span></pre>
+</div>
+
+<!-- 5. ROUTING -->
+<div class="section">
+  <div class="section-num">Section 05</div>
+  <h2>Routing Protocol Implementation</h2>
+  <p>Three routing protocols are deployed across the network, each selected for the specific characteristics of the network segment it serves. This multi-protocol approach demonstrates the strengths and appropriate use cases of each protocol.</p>
+
+  <h3>5.1 OSPF — Open Shortest Path First (HQ Core)</h3>
+  <p>OSPF is deployed as a single Area 0 across the HQ core and distribution layers. As a link-state protocol, OSPF maintains a complete topology map (LSDB) and uses Dijkstra's algorithm to compute the shortest path to each destination. This makes OSPF fast-converging and loop-free by design.</p>
+
+  <table class="report-table">
+    <caption>Table 2 — OSPF Configuration Summary</caption>
+    <thead><tr><th>Device</th><th>Router-ID</th><th>Networks Advertised</th></tr></thead>
+    <tbody>
+      <tr><td>HQ-Core</td><td class="mono">1.1.1.1</td><td class="mono">10.0.0.0/30, 10.10.0.0/30, 10.10.0.4/30</td></tr>
+      <tr><td>HQ-Dist1</td><td class="mono">2.2.2.2</td><td class="mono">10.10.0.0/30, 10.10.10–60/24, 10.0.1.0/24</td></tr>
+      <tr><td>HQ-Dist2</td><td class="mono">3.3.3.3</td><td class="mono">10.10.0.4/30, 10.10.40–60/24</td></tr>
+    </tbody>
+  </table>
+
+  <p>HQ-Core uses <code>default-information originate</code> to propagate its default route (pointing to the ASA) to all OSPF neighbours, ensuring all internal subnets have a path to the internet without requiring static routes on distribution switches.</p>
+
+  <div class="callout callout-blue">
+    <strong>Design decision:</strong> Only the HSRP Active switch for a given VLAN advertises that SVI subnet into OSPF. Both advertising the same subnet would create duplicate paths and asymmetric routing. This is enforced by including the subnet in OSPF only on the Active device.
+  </div>
+
+  <h3>5.2 RIPv2 — Routing Information Protocol (Branches &amp; ISP)</h3>
+  <p>RIPv2 is deployed at the branch sites and on the ISP router. As a distance-vector protocol with a maximum hop count of 15, RIPv2 is simple to configure and appropriate for small branch environments with limited topology complexity. <code>no auto-summary</code> is configured to prevent automatic summarisation to classful boundaries, which would cause routing black holes with the discontiguous subnets in use.</p>
+
+  <pre><span class="c">! Branch router RIPv2</span>
+<span class="k">router rip</span>
+ <span class="k">version</span> <span class="v">2</span>
+ <span class="k">no auto-summary</span>
+ <span class="k">network</span> <span class="v">203.0.114.0</span>
+ <span class="k">network</span> <span class="v">192.168.1.0</span></pre>
+
+  <h3>5.3 BGP — Border Gateway Protocol (Discussion)</h3>
+  <p>While BGP is not implemented in the simulated topology (Cisco Packet Tracer does not support iBGP and real BGP peering with an ISP requires autonomous system assignment), it is included in this report as the real-world routing protocol that would be deployed between SecureNet's ASA edge and the ISP.</p>
+  <p>BGP is the protocol of the internet, operating between autonomous systems (AS) to exchange reachability information. In a production deployment, SecureNet would be assigned a public AS number and would establish eBGP peering with the ISP to advertise its public address block. BGP's policy controls (route maps, communities, local preference, MED) would allow SecureNet to implement traffic engineering and multi-homing.</p>
+</div>
+
+<!-- 6. REDUNDANCY -->
+<div class="section">
+  <div class="section-num">Section 06</div>
+  <h2>Redundancy — HSRP, EtherChannel &amp; STP</h2>
+  <p>Network redundancy eliminates single points of failure. The distribution layer implements three complementary redundancy mechanisms that operate at different OSI layers.</p>
+
+  <h3>6.1 HSRP — Hot Standby Router Protocol (Layer 3)</h3>
+  <p>HSRP is a Cisco proprietary First Hop Redundancy Protocol (FHRP). It allows two physical switches to present a single virtual IP address and MAC address to end hosts. End hosts configure this virtual IP as their default gateway. If the Active switch fails, the Standby switch takes over the virtual IP within seconds without requiring any host reconfiguration.</p>
+
+  <p>The VLAN-to-active-switch assignment is load-balanced across both distribution switches:</p>
+
+  <table class="report-table">
+    <caption>Table 3 — HSRP Load Balancing</caption>
+    <thead><tr><th>Switch</th><th>HSRP Active (priority 110)</th><th>HSRP Standby (priority 90)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>HQ-Dist1</strong></td><td>VLAN 10, 20, 30, 80</td><td>VLAN 40, 50, 60</td></tr>
+      <tr><td><strong>HQ-Dist2</strong></td><td>VLAN 40, 50, 60, 70</td><td>VLAN 10, 20, 30, 80</td></tr>
+    </tbody>
+  </table>
+
+  <p>The <code>preempt</code> keyword is configured on all Active groups, ensuring that if the Active switch recovers after a failure it immediately reclaims the Active role rather than remaining in Standby.</p>
+
+  <h3>6.2 EtherChannel — IEEE 802.3ad LACP (Layer 2)</h3>
+  <p>EtherChannel bundles multiple physical links into a single logical interface, providing both redundancy and bandwidth aggregation. Port-Channel 1 is formed between HQ-Dist1 and HQ-Dist2 using LACP (Link Aggregation Control Protocol) with two FastEthernet links (Fa0/23 and Fa0/24), creating a logical 200 Mbps peer-link.</p>
+  <p>This peer-link is critical for HSRP operation: it carries HSRP hello messages between Dist1 and Dist2. Without it, both switches would simultaneously believe they are Active (split-brain), causing a duplicate gateway MAC on the network. The peer-link trunk is configured to allow all VLANs (10–80).</p>
+
+  <pre><span class="c">! EtherChannel — HQ-Dist1</span>
+<span class="k">interface</span> <span class="i">FastEthernet0/23</span>
+ <span class="k">channel-group</span> <span class="v">1</span> <span class="k">mode</span> <span class="v">active</span>
+<span class="k">interface</span> <span class="i">FastEthernet0/24</span>
+ <span class="k">channel-group</span> <span class="v">1</span> <span class="k">mode</span> <span class="v">active</span>
+<span class="k">interface</span> <span class="i">Port-channel1</span>
+ <span class="k">switchport trunk encapsulation</span> <span class="v">dot1q</span>
+ <span class="k">switchport mode</span> <span class="v">trunk</span>
+ <span class="k">switchport trunk allowed vlan</span> <span class="v">10,20,30,40,50,60,70,80</span></pre>
+
+  <h3>6.3 Spanning Tree — Rapid PVST+ (Layer 2)</h3>
+  <p>All switches run Rapid Per-VLAN Spanning Tree (Rapid-PVST+). STP root priorities are deliberately aligned with HSRP Active assignments to prevent suboptimal forwarding paths. If STP root and HSRP Active were on different switches, traffic would cross the peer-link unnecessarily, increasing latency and consuming bandwidth.</p>
+
+  <table class="report-table">
+    <caption>Table 4 — STP Root Priority Alignment with HSRP</caption>
+    <thead><tr><th>Switch</th><th>STP Root VLANs (priority 4096)</th><th>STP Non-Root VLANs (priority 8192)</th></tr></thead>
+    <tbody>
+      <tr><td>HQ-Dist1</td><td>10, 20, 30, 80</td><td>40, 50, 60, 70</td></tr>
+      <tr><td>HQ-Dist2</td><td>40, 50, 60, 70</td><td>10, 20, 30, 80</td></tr>
+    </tbody>
+  </table>
+
+  <p>Access switch host-facing ports use <code>spanning-tree portfast</code> to bypass the 30-second STP listening/learning delay and <code>bpduguard enable</code> to automatically err-disable the port if a BPDU is received — preventing unauthorised switch connections from disrupting the spanning tree topology.</p>
+</div>
+
+<!-- 7. SECURITY -->
+<div class="section">
+  <div class="section-num">Section 07</div>
+  <h2>Security Design — Firewall, DMZ &amp; ACLs</h2>
+  <p>The security architecture places a Cisco ASA 5506-X firewall as the single choke point between the untrusted internet, the internal network, and the semi-trusted DMZ. This creates three distinct security zones with enforced traffic policies between them.</p>
+
+  <h3>7.1 DMZ Architecture</h3>
+  <p>The Demilitarised Zone hosts three public-facing servers: a web server (HTTP/HTTPS), a mail server (SMTP/POP3), and an FTP server. These servers must be reachable from the internet but must not have direct access to internal corporate resources.</p>
+
+  <div class="figure">
+    <div class="figure-body">
+      <div class="fig-box" style="justify-content:center; gap:16px;">
+        <div style="text-align:center">
+          <div class="fig-node" style="background:#fef2f2;border-color:#fca5a5;color:#991b1b;">Internet</div>
+          <div class="fig-label">untrusted</div>
+        </div>
+        <span class="fig-arrow">→</span>
+        <div style="text-align:center">
+          <div class="fig-node" style="background:#fff1f2;border-color:#fca5a5;color:#991b1b;">ASA 5506-X</div>
+          <div class="fig-label">outside · inside · dmz</div>
+        </div>
+        <span class="fig-arrow">→</span>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="text-align:center"><div class="fig-node" style="background:#f5f3ff;border-color:#c4b5fd;color:#5b21b6;">DMZ Servers</div><div class="fig-label">sec-level 50</div></div>
+          <div style="text-align:center"><div class="fig-node" style="background:#eff6ff;border-color:#93c5fd;color:#1e40af;">Internal HQ</div><div class="fig-label">sec-level 100</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="figure-caption">Figure 2 — ASA three-zone security model</div>
+  </div>
+
+  <h3>7.2 Static NAT for DMZ Services</h3>
+  <p>Each DMZ server is mapped to a public IP via static NAT on the ASA. This allows external users to reach services using public addresses while the servers retain private RFC 1918 addresses internally.</p>
+
+  <table class="report-table">
+    <caption>Table 5 — Static NAT Mappings</caption>
+    <thead><tr><th>Server</th><th>Private IP</th><th>Public IP</th><th>Services</th></tr></thead>
+    <tbody>
+      <tr><td>DMZ-Web</td><td class="mono">172.16.0.10</td><td class="mono">203.0.113.10</td><td>HTTP (80), HTTPS (443)</td></tr>
+      <tr><td>DMZ-Email</td><td class="mono">172.16.0.11</td><td class="mono">203.0.113.11</td><td>SMTP (25), POP3 (110)</td></tr>
+      <tr><td>DMZ-FTP</td><td class="mono">172.16.0.12</td><td class="mono">203.0.113.12</td><td>FTP (20, 21)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.3 Access Control Lists</h3>
+  <p>Two ACLs enforce traffic policy on the ASA. The <code>outside-in</code> ACL permits only specific service ports inbound from the internet to the static NAT public IPs. All other inbound traffic is implicitly denied. The <code>dmz-in</code> ACL restricts DMZ-initiated traffic to the inside network, permitting only reply traffic using source-port matching (required due to Packet Tracer's ASA not supporting the <code>established</code> keyword).</p>
+
+  <div class="callout">
+    <strong>PT Limitation:</strong> The ASA in Packet Tracer silently drops ACE entries using the <code>established</code> keyword. The <code>dmz-in</code> ACL uses explicit source-port matching (e.g. <code>permit tcp 172.16.0.0/24 eq 80 10.0.0.0/8</code>) as the workaround. This is functionally equivalent for the simulated environment.
+  </div>
+
+  <h3>7.4 PAT for Internal Users</h3>
+  <p>All internal hosts (10.0.0.0/8) share the ASA's outside interface IP for internet access via dynamic NAT overload (Port Address Translation). This conserves public IP addresses and hides internal addressing from the internet.</p>
+</div>
+
+<!-- 8. VPN -->
+<div class="section">
+  <div class="section-num">Section 08</div>
+  <h2>Site-to-Site IPsec VPN</h2>
+  <p>Two site-to-site IPsec VPN tunnels connect the HQ ASA to each branch router, providing encrypted communication over the public internet. The VPN ensures that sensitive corporate data transmitted between sites cannot be intercepted or tampered with in transit.</p>
+
+  <h3>8.1 IKEv1 Phase 1 — ISAKMP</h3>
+  <p>IKE Phase 1 establishes a secure management channel (ISAKMP SA) used to protect Phase 2 negotiation. The following parameters are agreed upon by both peers:</p>
+
+  <table class="report-table">
+    <caption>Table 6 — IKE Phase 1 Parameters</caption>
+    <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Authentication</td><td>Pre-shared key</td></tr>
+      <tr><td>Encryption</td><td>AES-128</td></tr>
+      <tr><td>Hash / Integrity</td><td>SHA-1</td></tr>
+      <tr><td>DH Group</td><td>Group 2 (1024-bit)</td></tr>
+      <tr><td>Lifetime</td><td>86400 seconds (24 hours)</td></tr>
+      <tr><td>Pre-shared Key</td><td class="mono">SecureNet123</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.2 IKEv1 Phase 2 — IPsec SA</h3>
+  <p>Phase 2 negotiates the actual data encryption parameters (IPsec SA). The transform set specifies ESP with AES encryption and SHA HMAC for data integrity.</p>
+
+  <table class="report-table">
+    <caption>Table 7 — VPN Tunnel Summary</caption>
+    <thead><tr><th>Tunnel</th><th>HQ Peer</th><th>Branch Peer</th><th>Protected Traffic</th></tr></thead>
+    <tbody>
+      <tr><td>HQ ↔ Branch 1</td><td class="mono">203.0.113.2</td><td class="mono">203.0.114.2</td><td class="mono">10.0.0.0/8 ↔ 192.168.1.0/24</td></tr>
+      <tr><td>HQ ↔ Branch 2</td><td class="mono">203.0.113.2</td><td class="mono">203.0.115.2</td><td class="mono">10.0.0.0/8 ↔ 192.168.2.0/24</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Implementation note:</strong> On the ASA, IKEv1 uses the <code>crypto ikev1</code> command family. On the 2911 branch routers, the equivalent IOS command family is <code>crypto isakmp</code>. Both implement the same IKEv1 standard. After opening the .pkt file, the branch routers must be reloaded (<code>reload</code>) as Packet Tracer only engages crypto maps on fresh boot. The ASA crypto map binding must also be re-applied on first open.
+  </div>
+</div>
+
+<!-- 9. SERVICES -->
+<div class="section">
+  <div class="section-num">Section 09</div>
+  <h2>Network Services — DHCP, DNS, NTP, AAA</h2>
+
+  <h3>9.1 DHCP</h3>
+  <p>Dynamic Host Configuration Protocol is implemented in two locations. The distribution layer switches serve as DHCP relay agents using <code>ip helper-address 10.0.1.10</code> on every user-facing SVI. This forwards broadcast DHCP requests from clients to the centralised DHCP server (SRV-Internal) across the routed infrastructure. A separate DHCP pool for Guest WiFi clients is hosted locally on HQ-Dist2's VLAN 70 SVI.</p>
+
+  <h3>9.2 DNS — Domain Name System</h3>
+  <p>A dedicated DNS-Server (10.0.1.11) in VLAN 80 provides name resolution for all internal and external hostnames. All devices reference this server. DNS records map internal hostnames to private IPs and external hostnames to the public NAT addresses of DMZ servers. All PCs and servers are configured with DNS pointing to 10.0.1.11.</p>
+
+  <h3>9.3 NTP — Network Time Protocol</h3>
+  <p>SRV-Internal acts as the NTP master for the network. All routing devices (ASA, Core, Dist1, Dist2, Branch routers) reference it with <code>ntp server 10.0.1.10</code>. Synchronised timestamps are critical for log correlation during security incident investigation and for certificate validity checking in IPsec operations.</p>
+
+  <h3>9.4 AAA — Authentication, Authorisation &amp; Accounting</h3>
+  <p>A dedicated AAA-Server (10.0.1.12) runs RADIUS on ports 1645 (authentication) and 1646 (accounting). Network devices authenticate management access against this server rather than using local usernames. HQ-Core uses <code>aaa new-model</code> with IOS RADIUS client configuration. The ASA uses the <code>aaa-server</code> command family with separate protocol and host stanzas.</p>
+
+  <table class="report-table">
+    <caption>Table 8 — AAA User Accounts</caption>
+    <thead><tr><th>Username</th><th>Password</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">admin</td><td class="mono">SecureNet@Admin</td><td>Full administrative access</td></tr>
+      <tr><td class="mono">netops</td><td class="mono">SecureNet@Ops</td><td>Network operations team</td></tr>
+      <tr><td class="mono">readonly</td><td class="mono">SecureNet@RO</td><td>Read-only monitoring access</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 10. WIRELESS -->
+<div class="section">
+  <div class="section-num">Section 10</div>
+  <h2>Wireless &amp; Guest Network</h2>
+
+  <h3>10.1 Guest Wireless Network</h3>
+  <p>A Linksys WRT300N wireless router provides guest WiFi access. Its WAN port connects to HQ-Dist2 FastEthernet0/7, configured as an access port in VLAN 70. HQ-Dist2 provides a DHCP pool for VLAN 70 (10.10.70.0/24), from which the WRT300N leases a WAN address. The WRT300N then performs its own NAT for wireless clients, providing internet access while completely preventing any guest device from reaching internal 10.x.x.x subnets.</p>
+
+  <table class="report-table">
+    <caption>Table 9 — Wireless Configuration</caption>
+    <thead><tr><th>Parameter</th><th>Guest WiFi</th><th>Corporate WLC</th></tr></thead>
+    <tbody>
+      <tr><td>SSID</td><td class="mono">SecureNet-Guest</td><td class="mono">SecureNet-Corp</td></tr>
+      <tr><td>Security</td><td>WPA2-PSK</td><td>WPA2-PSK</td></tr>
+      <tr><td>Passphrase</td><td class="mono">Guest@2024!</td><td class="mono">Corp@SecureNet!</td></tr>
+      <tr><td>Network</td><td>10.10.70.0/24 (VLAN 70)</td><td>10.0.1.0/24 (VLAN 80)</td></tr>
+      <tr><td>Isolation</td><td>Full (WRT300N NAT)</td><td>Corporate access</td></tr>
+      <tr><td>DNS</td><td>8.8.8.8 (internet only)</td><td>10.0.1.11 (internal)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 Corporate Wireless (WLC)</h3>
+  <p>A second WRT300N simulates a Wireless LAN Controller in the Services VLAN 80. In a production environment this would be replaced by a Cisco Catalyst 9800 WLC managing lightweight access points. For the purposes of this simulation, the WRT300N demonstrates the concept of a centrally managed corporate wireless network with access to internal resources, DNS, and AAA authentication.</p>
+</div>
+
+<!-- 11. MONITORING -->
+<div class="section">
+  <div class="section-num">Section 11</div>
+  <h2>Monitoring — SNMP &amp; Syslog</h2>
+
+  <h3>11.1 SNMP — Simple Network Management Protocol</h3>
+  <p>SNMPv2c is configured on all routing and switching devices using the community string <code>SecureNet-RO</code> in read-only mode. The SNMP manager is SRV-Internal (10.0.1.10), which can poll device MIBs for interface statistics, CPU utilisation, memory usage, and routing table information. This enables proactive monitoring and capacity planning.</p>
+
+  <div class="callout callout-green">
+    <strong>Devices with SNMP configured:</strong> HQ-ASA, HQ-Core, HQ-Dist1, HQ-Dist2, BR1-Router, BR2-Router — all using community string <code>SecureNet-RO RO</code> pointing to collector 10.0.1.10.
+  </div>
+
+  <h3>11.2 Syslog</h3>
+  <p>All network devices forward syslog messages to SRV-Internal (10.0.1.10). Syslog provides a centralised audit trail of device events including interface state changes, routing adjacency changes, ACL hits, NAT translations, and authentication attempts. Combined with NTP synchronisation, log timestamps are reliable across all devices, enabling accurate incident timeline reconstruction.</p>
+</div>
+
+<!-- 12. SDN / CLOUD -->
+<div class="section">
+  <div class="section-num">Section 12</div>
+  <h2>SDN &amp; Cloud Trends (Part D)</h2>
+
+  <h3>12.1 Software-Defined Networking</h3>
+  <p>Software-Defined Networking (SDN) decouples the network control plane from the data plane. In traditional networks like the one implemented in this project, each device independently makes forwarding decisions based on locally held routing tables. In an SDN architecture, a centralised controller (such as Cisco DNA Center or an OpenDaylight controller) maintains a global view of the network and pushes forwarding rules to individual devices.</p>
+  <p>For SecureNet Technologies, an SDN migration would offer several benefits: centralised policy enforcement (eliminating the need to configure individual devices), dynamic traffic engineering, faster network programmability via APIs (northbound REST interfaces), and simplified network visualisation. Technologies such as VXLAN with EVPN control plane would replace the traditional VLAN/STP model, removing the broadcast domain limitations inherent in the current design.</p>
+
+  <h3>12.2 Cloud Networking Trends</h3>
+  <p>Cloud adoption is transforming enterprise network design. Rather than hosting all services in an on-premises data centre (as implemented here with SRV-Internal, DNS-Server, AAA-Server), organisations increasingly leverage cloud service providers for compute and storage while maintaining on-premises connectivity via SD-WAN or direct cloud connects.</p>
+
+  <p>Key trends relevant to SecureNet's future evolution include:</p>
+  <ul style="padding-left:20px;margin:8px 0;display:flex;flex-direction:column;gap:5px;">
+    <li><strong>SD-WAN:</strong> Replacing the IPsec VPN model with an SD-WAN overlay that provides application-aware routing, automatic failover between WAN connections, and centralised policy management — removing the need for manual <code>crypto map</code> configuration on each branch router</li>
+    <li><strong>SASE (Secure Access Service Edge):</strong> Converging network security (firewall, CASB, ZTNA) with WAN connectivity into a cloud-delivered service, eliminating the need for on-premises ASA hardware as traffic inspection moves to the cloud edge</li>
+    <li><strong>Zero Trust Architecture:</strong> Moving away from perimeter-based security (the current model where internal traffic is implicitly trusted) toward identity-based micro-segmentation where every connection is authenticated and authorised regardless of network location</li>
+    <li><strong>Infrastructure as Code:</strong> Managing network configurations via tools like Ansible, Terraform, or Cisco NSO rather than manual CLI, enabling version-controlled, repeatable, and auditable network changes</li>
+  </ul>
+
+  <h3>12.3 Governance Considerations</h3>
+  <p>Network design at SecureNet must align with applicable governance frameworks. The VLAN segmentation and firewall ACLs implemented in this design directly support compliance with principles from ISO 27001 (information security management) and frameworks such as NIST SP 800-53. Specific controls addressed include network segmentation (SC-7), identification and authentication (IA-2 via AAA/RADIUS), audit logging (AU-2 via Syslog), and time synchronisation (AU-8 via NTP). Regular penetration testing of the ASA ACLs and VPN configuration would be recommended as part of ongoing governance.</p>
+</div>
+
+<!-- 13. CONCLUSION -->
+<div class="section">
+  <div class="section-num">Section 13</div>
+  <h2>Conclusion</h2>
+  <p>This project has successfully designed and simulated a comprehensive enterprise network for SecureNet Technologies that meets all stated business and technical requirements. The implemented solution delivers:</p>
+
+  <ul style="padding-left:20px;margin:10px 0 16px;display:flex;flex-direction:column;gap:6px;">
+    <li><strong>High availability</strong> through dual distribution switches with HSRP gateway redundancy, EtherChannel peer-link, dual-uplink access switches, and STP failover</li>
+    <li><strong>Security depth</strong> through a three-zone ASA firewall, ACL-enforced DMZ, encrypted VPN tunnels, AAA-controlled device access, and guest network isolation</li>
+    <li><strong>Scalable routing</strong> through hierarchical OSPF at HQ, RIPv2 at branches, and a documented BGP upgrade path for internet edge connectivity</li>
+    <li><strong>Operational visibility</strong> through centralised SNMP monitoring, Syslog aggregation, NTP synchronisation, and DNS name resolution</li>
+    <li><strong>Service richness</strong> through dedicated servers for DNS, AAA, NTP/Syslog/SNMP, corporate wireless, and guest WiFi isolation</li>
+  </ul>
+
+  <p>The network has been fully validated in Cisco Packet Tracer 9.0 with 45 devices and 52 physical links, zero blocking validation errors, and complete configuration on all devices. The design provides a solid foundation for SecureNet Technologies' current operations while establishing clear upgrade paths toward SDN, SD-WAN, and cloud-native architectures as the organisation grows.</p>
+
+  <div class="callout callout-green">
+    <strong>Simulation file:</strong> SecureNet_Enterprise_Network.pkt — all configurations are pre-applied. After opening, reload BR1-Router and BR2-Router for IPsec to engage, and rebind the ASA crypto map (<code>no crypto map VPN-MAP interface outside</code> → <code>crypto map VPN-MAP interface outside</code>).
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<div class="page-footer">
+  <span>SecureNet Technologies — Enterprise Network Design Report</span>
+  <span>Junior Network Security Engineer · June 2026</span>
+</div>
+
+</body>
+</html>
